@@ -1,0 +1,60 @@
+############################################
+### HEALTH CHECK
+############################################
+GET http://localhost:3000/health
+
+
+############################################
+### GET ALL PRODUCTS
+############################################
+GET http://localhost:3000/products
+
+
+############################################
+### ADD PRODUCT TO CART
+### Customer 1 adds product 1 (qty 2)
+############################################
+POST http://localhost:3000/cart/1/add
+Content-Type: application/json
+
+{
+  "productId": 1,
+  "quantity": 2
+}
+
+
+############################################
+### ADD ANOTHER PRODUCT
+### Customer 1 adds product 2 (qty 1)
+############################################
+POST http://localhost:3000/cart/1/add
+Content-Type: application/json
+
+{
+  "productId": 2,
+  "quantity": 1
+}
+
+
+############################################
+### VIEW CART FOR CUSTOMER 1
+############################################
+GET http://localhost:3000/cart/1
+
+
+############################################
+### REMOVE PRODUCT FROM CART
+############################################
+DELETE http://localhost:3000/cart/1/remove/1
+
+
+############################################
+### VIEW CART AGAIN
+############################################
+GET http://localhost:3000/cart/1
+
+
+############################################
+### CHECKOUT THE CART
+############################################
+POST http://localhost:3000/orders/1/checkout
