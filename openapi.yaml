@@ -1,0 +1,484 @@
+---
+openapi: 3.0.1
+info:
+  title: HomeofficeCart API
+  description: ''
+  version: 1.0.0
+tags: []
+paths:
+  "/customers":
+    post:
+      summary: POST Customers
+      deprecated: false
+      description: Create Customer
+      tags: []
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                customer_id:
+                  type: string
+                first_name:
+                  type: string
+                last_name:
+                  type: string
+                email:
+                  type: string
+                phone:
+                  type: string
+              required:
+              - customer_id
+              - first_name
+              - last_name
+              - email
+              - phone
+            example:
+              customer_id: 1
+              first_name: Kiran
+              last_name: Raj
+              email: kiran@example.com
+              phone: 123-456-7890
+        required: true
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  customer_id:
+                    type: string
+                  first_name:
+                    type: string
+                  last_name:
+                    type: string
+                  email:
+                    type: string
+                  phone:
+                    type: string
+                  created_at:
+                    type: string
+                required:
+                - customer_id
+                - first_name
+                - last_name
+                - email
+                - phone
+                - created_at
+              example:
+                customer_id: 1
+                first_name: Kiran
+                last_name: Raj
+                email: kiran@example.com
+                phone: 123-456-7890
+                created_at: '2025-11-23T10:30:00Z'
+          headers: {}
+        '400':
+          description: ''
+          content:
+            application/json:
+              schema:
+                title: ''
+                type: object
+                properties:
+                  Error:
+                    type: string
+                    description: missing or invalid data
+                required:
+                - Error
+          headers: {}
+        '409':
+          description: ''
+          content:
+            application/json:
+              schema:
+                title: ''
+                type: object
+                properties:
+                  Conflict Error:
+                    type: string
+                    description: Email already exist
+                required:
+                - Conflict Error
+          headers: {}
+      security: []
+  "/products":
+    get:
+      summary: GET Products
+      deprecated: false
+      description: List laptops & furniture
+      tags: []
+      parameters: []
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    product_id:
+                      type: integer
+                    name:
+                      type: string
+                    description:
+                      type: string
+                    price:
+                      type: number
+                    stock_quantity:
+                      type: integer
+                  required:
+                  - product_id
+                  - name
+                  - description
+                  - price
+                  - stock_quantity
+              example:
+              - product_id: 1
+                name: UltraBook Pro 14"
+                description: 14-inch ultrabook, Intel i7, 16GB RAM, 512GB SSD
+                price: 1599.99
+                stock_quantity: 20
+              - product_id: 2
+                name: Modern Office Desk
+                description: 48-inch wooden office desk with cable management
+                price: 299.99
+                stock_quantity: 25
+          headers: {}
+      security: []
+  "/orders":
+    post:
+      summary: Create new order
+      deprecated: false
+      description: Create a new order
+      tags: []
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                customer_id:
+                  type: integer
+                items:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      product_id:
+                        type: integer
+                      quantity:
+                        type: integer
+                    required:
+                    - product_id
+                    - quantity
+              required:
+              - customer_id
+              - items
+            example:
+              customer_id: 1
+              items:
+              - product_id: 1
+                quantity: 1
+              - product_id: 11
+                quantity: 1
+        required: true
+      responses:
+        '201':
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  order_id:
+                    type: integer
+                  customer_id:
+                    type: integer
+                  order_date:
+                    type: string
+                  status:
+                    type: string
+                  total_amount:
+                    type: number
+                  items:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        order_item_id:
+                          type: integer
+                        product_id:
+                          type: integer
+                        quantity:
+                          type: integer
+                        price:
+                          type: number
+                      required:
+                      - order_item_id
+                      - product_id
+                      - quantity
+                      - price
+                required:
+                - order_id
+                - customer_id
+                - order_date
+                - status
+                - total_amount
+                - items
+              example:
+                order_id: 1001
+                customer_id: 1
+                order_date: '2025-11-23T11:00:00Z'
+                status: PENDING
+                total_amount: 1899.98
+                items:
+                - order_item_id: 1
+                  product_id: 1
+                  quantity: 1
+                  price: 1599.99
+                - order_item_id: 2
+                  product_id: 11
+                  quantity: 1
+                  price: 299.99
+          headers: {}
+        '400':
+          description: ''
+          content:
+            application/json:
+              schema:
+                title: ''
+                type: object
+                properties:
+                  Error:
+                    type: string
+                    description: Invalid Payload
+                required:
+                - Error
+          headers: {}
+        '404':
+          description: ''
+          content:
+            application/json:
+              schema:
+                title: ''
+                type: object
+                properties:
+                  Error:
+                    type: string
+                    description: Customer/Product not found
+                required:
+                - Error
+      security: []
+  "/orders/{orderId}":
+    get:
+      summary: Get an order
+      deprecated: false
+      description: Get a specific order by orderId
+      tags: []
+      parameters:
+      - name: orderId
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  order_id:
+                    type: integer
+                  customer_id:
+                    type: integer
+                  order_date:
+                    type: string
+                  status:
+                    type: string
+                  total_amount:
+                    type: number
+                  items:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        order_item_id:
+                          type: integer
+                        product_id:
+                          type: integer
+                        quantity:
+                          type: integer
+                        price:
+                          type: number
+                      required:
+                      - order_item_id
+                      - product_id
+                      - quantity
+                      - price
+                required:
+                - order_id
+                - customer_id
+                - order_date
+                - status
+                - total_amount
+                - items
+              example:
+                order_id: 1001
+                customer_id: 1
+                order_date: '2025-11-23T11:00:00Z'
+                status: PENDING
+                total_amount: 1899.98
+                items:
+                - order_item_id: 1
+                  product_id: 1
+                  quantity: 1
+                  price: 1599.99
+                - order_item_id: 2
+                  product_id: 11
+                  quantity: 1
+                  price: 299.99
+        '404':
+          description: ''
+          content:
+            application/json:
+              schema:
+                title: ''
+                type: object
+                properties:
+                  Error:
+                    type: string
+                    description: Order doesn't exist
+                required:
+                - Error
+      security: []
+    put:
+      summary: Edit order status
+      deprecated: false
+      description: Update an existing order's payment status
+      tags: []
+      parameters:
+      - name: orderId
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                status:
+                  type: string
+              required:
+              - status
+            example:
+              status: PAID
+        required: true
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  order_id:
+                    type: integer
+                  status:
+                    type: string
+                required:
+                - order_id
+                - status
+              example:
+                order_id: 1001
+                status: PAID
+        '400':
+          description: ''
+          content:
+            application/json:
+              schema:
+                title: ''
+                type: object
+                properties:
+                  Error:
+                    type: string
+                    description: Invalid status value
+                required:
+                - Error
+        '404':
+          description: ''
+          content:
+            application/json:
+              schema:
+                title: ''
+                type: object
+                properties:
+                  Error:
+                    type: string
+                    description: Order not found/doesn't exist
+                required:
+                - Error
+      security: []
+    delete:
+      summary: Delete Order
+      deprecated: false
+      description: ''
+      tags: []
+      parameters:
+      - name: orderId
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  order_id:
+                    type: integer
+                required:
+                - message
+                - order_id
+              example:
+                message: Order deleted successfully.
+                order_id: 1001
+        '404':
+          description: ''
+          content:
+            application/json:
+              schema:
+                title: ''
+                type: object
+                properties:
+                  Error:
+                    type: string
+                    description: Order Not Found
+                required:
+                - Error
+      security: []
+components:
+  schemas: {}
+  responses: {}
+  securitySchemes: {}
+servers: []
+security: []
